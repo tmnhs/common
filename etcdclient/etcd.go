@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 	"github.com/coreos/etcd/clientv3"
-	"github.com/tmnhs/common/config"
+	"github.com/tmnhs/common"
 	"github.com/tmnhs/common/logger"
 	"strings"
 	"time"
@@ -178,6 +178,6 @@ func NewEtcdTimeoutContext() (context.Context, context.CancelFunc) {
 	ctx, cancel := context.WithTimeout(context.Background(), _defalutEtcd.reqTimeout)
 	etcdCtx := &etcdTimeoutContext{}
 	etcdCtx.Context = ctx
-	etcdCtx.etcdEndpoints = config.GetConfigModels().Etcd.Endpoints
+	etcdCtx.etcdEndpoints = common.GetConfigModels().Etcd.Endpoints
 	return etcdCtx, cancel
 }

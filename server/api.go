@@ -5,18 +5,16 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/jessevdk/go-flags"
-	"github.com/tmnhs/common/config"
+	"github.com/tmnhs/common"
 	"github.com/tmnhs/common/dbclient"
 	"github.com/tmnhs/common/etcdclient"
 	"github.com/tmnhs/common/logger"
+	"github.com/tmnhs/common/notify"
 	"github.com/tmnhs/common/redisclient"
 	"io"
-	"net"
 	"net/http"
-	"net/http/httputil"
 	"os"
 	"os/signal"
-	"strings"
 	"sync"
 	"syscall"
 	"time"
@@ -52,10 +50,10 @@ var (
 	}
 )
 
-type Option func(c *config.Config)
+type Option func(c *common.Config)
 
 func WithMysql() Option {
-	return func(c *config.Config) {
+	return func(c *common.Config) {
 		mysqlConfig := c.Mysql
 		//db
 		dsn := mysqlConfig.EmptyDsn()
@@ -73,7 +71,7 @@ func WithMysql() Option {
 }
 
 func WithEtcd() Option {
-	return func(c *config.Config) {
+	return func(c *common.Config) {
 		etcdConfig := c.Etcd
 		//etcd
 		_, err := etcdclient.Init(etcdConfig.Endpoints, etcdConfig.DialTimeout, etcdConfig.ReqTimeout)
@@ -85,8 +83,25 @@ func WithEtcd() Option {
 	}
 }
 
+func WithNotify() Option {
+	return func(c *common.Config) {
+		//notify
+		notify.Init(&notify.Mail{
+			Port:     c.Email.Port,
+			From:     c.Email.From,
+			Host:     c.Email.Host,
+			Secret:   c.Email.Secret,
+			Nickname: c.Email.Nickname,
+		}, &notify.WebHook{
+			Url:  c.WebHook.Url,
+			Kind: c.WebHook.Kind,
+		})
+
+		go notify.Serve()
+	}
+}
 func WithRedis() Option {
-	return func(c *config.Config) {
+	return func(c *common.Config) {
 		redisConfig := c.Redis
 		//reds
 		_, err := redisclient.Init(redisConfig.Addr, redisConfig.Password, redisConfig.DB)
@@ -148,49 +163,6 @@ func (srv *ApiServer) Shutdown(ctx context.Context) {
 	srv.HttpServer.Shutdown(ctx)
 }
 
-// ApiRecovery recovery any panics and writes a 500 if there was one.
-func (srv *ApiServer) apiRecoveryMiddleware() gin.HandlerFunc {
-	return func(c *gin.Context) {
-		defer func() {
-			if err := recover(); err != nil {
-				var brokenPipe bool
-				if ne, ok := err.(*net.OpError); ok {
-					if se, ok := ne.Err.(*os.SyscallError); ok {
-						if strings.Contains(strings.ToLower(se.Error()), "broken pipe") || strings.Contains(strings.ToLower(se.Error()), "connection reset by peer") {
-							brokenPipe = true
-						}
-					}
-				}
-
-				stack := stack(3)
-				httpRequest, _ := httputil.DumpRequest(c.Request, false)
-				headers := strings.Split(string(httpRequest), "\r\n")
-				for idx, header := range headers {
-					current := strings.Split(header, ":")
-					if current[0] == "Authorization" {
-						headers[idx] = current[0] + ": *"
-					}
-				}
-
-				if brokenPipe {
-					logger.GetLogger().Error(fmt.Sprintf("%s\n%s%s", err, string(httpRequest), reset))
-				} else {
-					logger.GetLogger().Error(fmt.Sprintf("[Recovery] %s panic recovered:\n%s\n%s%s",
-						formatTime(time.Now()), err, stack, reset))
-				}
-
-				if brokenPipe {
-					c.Error(err.(error))
-					c.Abort()
-				} else {
-					c.AbortWithStatus(http.StatusInternalServerError)
-				}
-			}
-		}()
-		c.Next()
-	}
-}
-
 func (srv *ApiServer) setupSignal() {
 	go func() {
 		var sigChan = make(chan os.Signal, 1)
@@ -221,7 +193,7 @@ func NewApiServer(opts ...Option) (*ApiServer, error) {
 	}
 
 	if ApiOptions.Version {
-		fmt.Printf("%s Version:%s\n", ApiModule, Version)
+		fmt.Printf("%s Version:%s\n", common.ApiModule, common.Version)
 		os.Exit(0)
 	}
 
@@ -238,10 +210,10 @@ func NewApiServer(opts ...Option) (*ApiServer, error) {
 			fmt.Println(http.ListenAndServe(fmt.Sprintf(":%d", ApiOptions.HealthCheckPort), healthCheckServer))
 		}()
 	}
-	var env = config.Environment(ApiOptions.Environment)
+	var env = common.Environment(ApiOptions.Environment)
 	if env.Invalid() {
 		var err error
-		env, err = config.NewGlobalEnvironment()
+		env, err = common.NewGlobalEnvironment()
 		if err != nil {
 			return nil, err
 		}
@@ -251,7 +223,7 @@ func NewApiServer(opts ...Option) (*ApiServer, error) {
 	if configFile == "" {
 		configFile = "main"
 	}
-	defaultConfig, err := config.LoadConfig(env.String(), configFile)
+	defaultConfig, err := common.LoadConfig(env.String(), configFile)
 	if err != nil {
 		fmt.Printf("api-server:init config error:%s", err.Error())
 		return nil, err
@@ -272,9 +244,9 @@ func NewApiServer(opts ...Option) (*ApiServer, error) {
 	apiServer.setupSignal()
 	//set gin mode
 	switch env {
-	case config.EnvProduction:
+	case common.EnvProduction:
 		gin.SetMode(gin.ReleaseMode)
-	case config.EnvTesting:
+	case common.EnvTesting:
 		gin.SetMode(gin.DebugMode)
 	}
 	return apiServer, nil
@@ -284,6 +256,7 @@ func NewApiServer(opts ...Option) (*ApiServer, error) {
 func (srv *ApiServer) ListenAndServe() error {
 	srv.Engine = gin.New()
 	srv.Engine.Use(srv.apiRecoveryMiddleware())
+	srv.Engine.Use(srv.cors())
 
 	for _, service := range srv.Services {
 		service(srv)

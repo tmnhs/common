@@ -15,11 +15,6 @@ var (
 	slash     = []byte("/")
 )
 
-const (
-	Version   = "v1.1.0"
-	ApiModule = "common/api-server"
-)
-
 func formatTime(t time.Time) string {
 	var timeString = t.Format("2006/01/02 - 15:04:05")
 	return timeString

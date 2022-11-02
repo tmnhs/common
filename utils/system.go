@@ -9,6 +9,8 @@ import (
 	"github.com/shirou/gopsutil/mem"
 )
 
+//获取服务器cpu,硬盘内存等信息
+
 const (
 	B  = 1
 	KB = 1024 * B
