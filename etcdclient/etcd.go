@@ -10,7 +10,7 @@ import (
 	"time"
 )
 
-var _defalutEtcd *Client
+var _defaultEtcd *Client
 
 type Client struct {
 	*clientv3.Client
@@ -26,32 +26,32 @@ func Init(endpoints []string, dialTimeout, reqTimeout int64) (*Client, error) {
 		fmt.Printf("connect to etcd failed, err:%v\n", err)
 		return nil, err
 	}
-	_defalutEtcd = &Client{
+	_defaultEtcd = &Client{
 		Client:     cli,
 		reqTimeout: time.Duration(reqTimeout) * time.Second,
 	}
-	return _defalutEtcd, nil
+	return _defaultEtcd, nil
 }
 
-func GetEtcdClient() *Client {
-	if _defalutEtcd == nil {
+func GetEtcd() *Client {
+	if _defaultEtcd == nil {
 		logger.GetLogger().Error("etcd is not initialized")
 		return nil
 	}
-	return _defalutEtcd
+	return _defaultEtcd
 }
 
 func Put(key, val string, opts ...clientv3.OpOption) (*clientv3.PutResponse, error) {
-	if _defalutEtcd == nil {
+	if _defaultEtcd == nil {
 		return nil, ErrEtcdNotInit
 	}
 	ctx, cancel := NewEtcdTimeoutContext()
 	defer cancel()
-	return _defalutEtcd.Put(ctx, key, val, opts...)
+	return _defaultEtcd.Put(ctx, key, val, opts...)
 }
 
 func PutWithTtl(key, val string, ttl int64) (*clientv3.PutResponse, error) {
-	if _defalutEtcd == nil {
+	if _defaultEtcd == nil {
 		return nil, ErrEtcdNotInit
 	}
 	ctx, cancel := NewEtcdTimeoutContext()
@@ -61,11 +61,11 @@ func PutWithTtl(key, val string, ttl int64) (*clientv3.PutResponse, error) {
 	if err != nil {
 		return nil, err
 	}
-	return _defalutEtcd.Put(ctx, key, val, clientv3.WithLease(leaseRsp.ID))
+	return _defaultEtcd.Put(ctx, key, val, clientv3.WithLease(leaseRsp.ID))
 }
 
 func PutWithModRev(key, val string, rev int64) (*clientv3.PutResponse, error) {
-	if _defalutEtcd == nil {
+	if _defaultEtcd == nil {
 		return nil, ErrEtcdNotInit
 	}
 	if rev == 0 {
@@ -73,7 +73,7 @@ func PutWithModRev(key, val string, rev int64) (*clientv3.PutResponse, error) {
 	}
 
 	ctx, cancel := NewEtcdTimeoutContext()
-	tresp, err := _defalutEtcd.Txn(ctx).
+	tresp, err := _defaultEtcd.Txn(ctx).
 		If(clientv3.Compare(clientv3.ModRevision(key), "=", rev)).
 		Then(clientv3.OpPut(key, val)).
 		Commit()
@@ -91,52 +91,52 @@ func PutWithModRev(key, val string, rev int64) (*clientv3.PutResponse, error) {
 }
 
 func Get(key string, opts ...clientv3.OpOption) (*clientv3.GetResponse, error) {
-	if _defalutEtcd == nil {
+	if _defaultEtcd == nil {
 		return nil, ErrEtcdNotInit
 	}
 	ctx, cancel := NewEtcdTimeoutContext()
 	defer cancel()
-	return _defalutEtcd.Get(ctx, key, opts...)
+	return _defaultEtcd.Get(ctx, key, opts...)
 }
 
 func Delete(key string, opts ...clientv3.OpOption) (*clientv3.DeleteResponse, error) {
-	if _defalutEtcd == nil {
+	if _defaultEtcd == nil {
 		return nil, ErrEtcdNotInit
 	}
 	ctx, cancel := NewEtcdTimeoutContext()
 	defer cancel()
-	return _defalutEtcd.Delete(ctx, key, opts...)
+	return _defaultEtcd.Delete(ctx, key, opts...)
 }
 
 func Watch(key string, opts ...clientv3.OpOption) clientv3.WatchChan {
-	return _defalutEtcd.Watch(context.Background(), key, opts...)
+	return _defaultEtcd.Watch(context.Background(), key, opts...)
 }
 
 func Grant(ttl int64) (*clientv3.LeaseGrantResponse, error) {
-	if _defalutEtcd == nil {
+	if _defaultEtcd == nil {
 		return nil, ErrEtcdNotInit
 	}
 	ctx, cancel := NewEtcdTimeoutContext()
 	defer cancel()
-	return _defalutEtcd.Grant(ctx, ttl)
+	return _defaultEtcd.Grant(ctx, ttl)
 }
 
 func Revoke(id clientv3.LeaseID) (*clientv3.LeaseRevokeResponse, error) {
-	if _defalutEtcd == nil {
+	if _defaultEtcd == nil {
 		return nil, ErrEtcdNotInit
 	}
-	ctx, cancel := context.WithTimeout(context.Background(), _defalutEtcd.reqTimeout)
+	ctx, cancel := context.WithTimeout(context.Background(), _defaultEtcd.reqTimeout)
 	defer cancel()
-	return _defalutEtcd.Revoke(ctx, id)
+	return _defaultEtcd.Revoke(ctx, id)
 }
 
 func GetLock(key string, id clientv3.LeaseID) (bool, error) {
-	if _defalutEtcd == nil {
+	if _defaultEtcd == nil {
 		return false, ErrEtcdNotInit
 	}
 	key = fmt.Sprintf(KeyEtcdLock, key)
 	ctx, cancel := NewEtcdTimeoutContext()
-	resp, err := _defalutEtcd.Txn(ctx).
+	resp, err := _defaultEtcd.Txn(ctx).
 		If(clientv3.Compare(clientv3.CreateRevision(key), "=", 0)).
 		Then(clientv3.OpPut(key, "", clientv3.WithLease(id))).
 		Commit()
@@ -175,7 +175,7 @@ func (c *etcdTimeoutContext) Err() error {
 
 // NewEtcdTimeoutContext return a new etcdTimeoutContext
 func NewEtcdTimeoutContext() (context.Context, context.CancelFunc) {
-	ctx, cancel := context.WithTimeout(context.Background(), _defalutEtcd.reqTimeout)
+	ctx, cancel := context.WithTimeout(context.Background(), _defaultEtcd.reqTimeout)
 	etcdCtx := &etcdTimeoutContext{}
 	etcdCtx.Context = ctx
 	etcdCtx.etcdEndpoints = common.GetConfigModels().Etcd.Endpoints
