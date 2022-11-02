@@ -1,5 +1,10 @@
 # common
-
+<div align=center>
+<img src="https://img.shields.io/badge/golang-1.16.5-blue"/>
+<img src="https://img.shields.io/badge/gin-1.8.1-lightBlue"/>
+<img src="https://img.shields.io/badge/gorm-1.23.10-red"/>
+<img src="https://img.shields.io/badge/etcd-3.5-red"/>
+</div>
 > 基于gorm、gin、zap、viper实现的对一些常用库的二次封装以及连接mysql、redis、etcd、日志的公共包，简化开发过程，能快速的搭建一个web后端服务器
 
 ##  1. 技术选型
