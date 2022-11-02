@@ -3,7 +3,7 @@ package etcdclient
 import "errors"
 
 const (
-	keyEtcdProfile = "/crony/"
+	keyEtcdProfile = "/common/"
 
 	KeyEtcdLockProfile = keyEtcdProfile + "lock/"
 	KeyEtcdLock        = KeyEtcdLockProfile + "%s"

@@ -102,7 +102,7 @@ go get -u github.com/tmnhs/common
   "log": {
     "level": "debug",
     "format": "console",
-    "prefix": "[crony-admin]",
+    "prefix": "[common]",
     "director": "logs",
     "showLine": false,
     "encode-level": "LowercaseLevelEncoder",
@@ -191,5 +191,30 @@ func configNoRoute(r *gin.Engine) {
 }
 ```
 
-## 4. 问题
+## 4. 可能出现的问题
+
+如果引入包并且go mod tidy 出现以下错误时
+
+```go
+go: finding module for package google.golang.org/grpc/naming
+github.com/tmnhs/common-test/cmd imports
+        github.com/tmnhs/common/server imports
+        github.com/tmnhs/common/etcdclient imports
+        github.com/coreos/etcd/clientv3 tested by
+        github.com/coreos/etcd/clientv3.test imports
+        github.com/coreos/etcd/integration imports
+        github.com/coreos/etcd/proxy/grpcproxy imports
+        google.golang.org/grpc/naming: module google.golang.org/grpc@latest found (v1.50.1), but does not contain package google.golang.org/grpc/naming
+```
+
+可以在go.mod中添加以下一行（这个报错和etcd连接的第三方库有版本冲突）
+
+```
+replace google.golang.org/grpc => google.golang.org/grpc v1.26.0
+```
+
+
+
+## 5. 交流讨论
+
 如有问题欢迎加qq:1685290935一起交流讨论

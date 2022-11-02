@@ -52,6 +52,7 @@ var (
 
 type Option func(c *common.Config)
 
+//注册mysql服务
 func WithMysql() Option {
 	return func(c *common.Config) {
 		mysqlConfig := c.Mysql
@@ -70,6 +71,7 @@ func WithMysql() Option {
 	}
 }
 
+//注册etcd服务
 func WithEtcd() Option {
 	return func(c *common.Config) {
 		etcdConfig := c.Etcd
@@ -83,6 +85,7 @@ func WithEtcd() Option {
 	}
 }
 
+//注册通知服务
 func WithNotify() Option {
 	return func(c *common.Config) {
 		//notify
@@ -100,6 +103,8 @@ func WithNotify() Option {
 		go notify.Serve()
 	}
 }
+
+//注册redis服务
 func WithRedis() Option {
 	return func(c *common.Config) {
 		redisConfig := c.Redis

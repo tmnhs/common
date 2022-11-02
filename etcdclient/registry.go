@@ -7,6 +7,7 @@ import (
 	"time"
 )
 
+//etcd服务注册并租约
 type ServerReg struct {
 	Client        *Client
 	stop          chan error
@@ -19,7 +20,7 @@ type ServerReg struct {
 
 func NewServerReg(ttl int64) *ServerReg {
 	return &ServerReg{
-		Client: _defalutEtcd,
+		Client: _defaultEtcd,
 		Ttl:    ttl,
 		stop:   make(chan error),
 	}
