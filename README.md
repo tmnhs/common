@@ -20,7 +20,7 @@
 | notify      | 提供email和webhook两种通知方式            |
 | server      | 基于gin实现对web服务的启动                 |
 | utils       | 一些工具类，比如system.go用来获取服务器cpu和内存信息 |
-| config.go   | 配置信息的结构体并加载配置文件                  |
+| config.go   | 配置信息的结构体并基于viper加载配置文件                  |
 | env.go      | 一些环境变量                           |
 | request.go  | 常见的绑定请求的的结构体                     |
 | response.go | 常见的请求返回的结构体   
