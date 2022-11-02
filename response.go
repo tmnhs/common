@@ -24,9 +24,8 @@ const (
 	ERROR   = 1000
 
 	ErrorRequestParameter = 1001
-	ErrorJobFormat        = 1002
-	ErrorTokenGenerate    = 1003
-	ErrorUserNameExist    = 1004
+	ErrorTokenGenerate    = 1002
+	ErrorUserNameExist    = 1003
 )
 
 func Result(code int, data interface{}, msg string, c *gin.Context) {
