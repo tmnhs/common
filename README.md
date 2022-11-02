@@ -3,11 +3,14 @@
 > 基于gorm、gin实现的对一些常用库的二次封装以及连接mysql、redis、etcd、日志的公共包，简化开发过程，能快速的搭建一个web后端服务器
 
 ## 使用方法
-使用示例可见:  [common-test](https://github.com/tmnhs/common-test)
 
 ```shell
 go get -u github.com/tmnhs/common
 ```
+
+使用示例可见:  [common-test](https://github.com/tmnhs/common-test)
+
+
 
 
 
