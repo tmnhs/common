@@ -188,5 +188,4 @@ func configNoRoute(r *gin.Engine) {
 }
 ```
 
-                   |
 
