@@ -1,6 +1,29 @@
 # common
 
-> 基于gorm、gin实现的对一些常用库的二次封装以及连接mysql、redis、etcd、日志的公共包，简化开发过程，能快速的搭建一个web后端服务器
+> 基于gorm、gin、zap、viper实现的对一些常用库的二次封装以及连接mysql、redis、etcd、日志的公共包，简化开发过程，能快速的搭建一个web后端服务器
+
+##  技术选型
+- 数据库:         [Gorm](http://gorm.cn)
+- web框架:      [Gin](https://gin-gonic.com/)
+- 日志:              [Zap](https://github.com/uber-go/zap)
+- 读取配置文件:[Viper](https://github.com/spf13/viper)
+
+## 目录结构
+
+
+| 目录          | 说明                               |
+| ----------- | -------------------------------- |
+| dbclient    | 基于gorm实现的数据库mysql连接              |
+| etcdclient  | 提供etcd连接                         |
+| httpclient  | 提供http(get/post)请求方法             |
+| logger      | 基于zap实现的日志管理，实现日志分类以及分割          |
+| notify      | 提供email和webhook两种通知方式            |
+| server      | 基于gin实现对web服务的启动                 |
+| utils       | 一些工具类，比如system.go用来获取服务器cpu和内存信息 |
+| config.go   | 配置信息的结构体并加载配置文件                  |
+| env.go      | 一些环境变量                           |
+| request.go  | 常见的绑定请求的的结构体                     |
+| response.go | 常见的请求返回的结构体   
 
 ## 使用方法
 
@@ -9,10 +32,6 @@ go get -u github.com/tmnhs/common
 ```
 
 使用示例可见:  [common-test](https://github.com/tmnhs/common-test)
-
-
-
-
 
 ### 1.配置文件
 
@@ -168,4 +187,6 @@ func configNoRoute(r *gin.Engine) {
 		r.StaticFile("/", "./dist/index.html") // 前端网页入口页面*/
 }
 ```
+
+                   |
 
