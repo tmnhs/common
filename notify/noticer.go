@@ -12,7 +12,6 @@ type Noticer interface {
 
 type Message struct {
 	Type      int
-	IP        string
 	Subject   string
 	Body      string
 	To        []string
