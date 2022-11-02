@@ -106,9 +106,9 @@ func WithRedis() Option {
 		//reds
 		_, err := redisclient.Init(redisConfig.Addr, redisConfig.Password, redisConfig.DB)
 		if err != nil {
-			logger.GetLogger().Error(fmt.Sprintf("api-server:init etcd failed , error:%s", err.Error()))
+			logger.GetLogger().Error(fmt.Sprintf("api-server:init redis failed , error:%s", err.Error()))
 		} else {
-			logger.GetLogger().Info("api-server:init etcd success")
+			logger.GetLogger().Info("api-server:init redis success")
 		}
 	}
 }
