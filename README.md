@@ -219,9 +219,12 @@ github.com/tmnhs/common-test/cmd imports
 ```
 replace google.golang.org/grpc => google.golang.org/grpc v1.26.0
 ```
+## 5. 其他功能
+如果你需要添加其他的功能，建议将common克隆到你的项目里自行修改
+```
+replace github.com/tmnhs/common => ../common
+```
 
-
-
-## 5. 交流讨论
+## 6. 交流讨论
 
 如有问题欢迎加qq:1685290935一起交流讨论
