@@ -1,6 +1,8 @@
 package utils
 
-import "os"
+import (
+	"os"
+)
 
 // Exists checks whether the file/folder in the given path exists
 func Exists(path string) bool {
@@ -25,4 +27,17 @@ func Ext(path string) string {
 		}
 	}
 	return ""
+}
+
+//CrateDir
+func CrateDir(dirs ...string) (err error) {
+	for _, v := range dirs {
+		exist := Exists(v)
+		if !exist {
+			if err := os.MkdirAll(v, os.ModePerm); err != nil {
+				return err
+			}
+		}
+	}
+	return err
 }
