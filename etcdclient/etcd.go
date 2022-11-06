@@ -10,6 +10,7 @@ import (
 	"time"
 )
 
+//Etcd连接
 var _defaultEtcd *Client
 
 type Client struct {

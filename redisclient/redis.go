@@ -6,6 +6,7 @@ import (
 	"github.com/tmnhs/common/logger"
 )
 
+//redis连接
 var _defaultRedis *redis.Client
 
 func Init(addr, password string, db int) (r *redis.Client, err error) {

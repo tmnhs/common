@@ -11,6 +11,7 @@ import (
 	"os"
 )
 
+//日志封装
 var _defaultLogger *zap.Logger
 
 func Init(level string, format, prefix, director string, showLine bool, encodeLevel string, stacktraceKey string, logInConsole bool) (logger *zap.Logger) {

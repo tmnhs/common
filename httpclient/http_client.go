@@ -10,6 +10,7 @@ import (
 	"time"
 )
 
+//Get方法
 func Get(url string, timeout int64) (result string, err error) {
 	var client = &http.Client{}
 	req, err := http.NewRequest("GET", url, nil)
@@ -36,6 +37,7 @@ func Get(url string, timeout int64) (result string, err error) {
 	return
 }
 
+//PostParams
 func PostParams(url string, params string, timeout int64) (result string, err error) {
 	var client = &http.Client{}
 	buf := bytes.NewBufferString(params)
@@ -64,6 +66,7 @@ func PostParams(url string, params string, timeout int64) (result string, err er
 	return
 }
 
+//PostJson
 func PostJson(url string, body string, timeout int64) (result string, err error) {
 	var client = &http.Client{}
 	buf := bytes.NewBufferString(body)
