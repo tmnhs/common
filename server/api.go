@@ -90,14 +90,14 @@ func WithNotify() Option {
 	return func(c *common.Config) {
 		//notify
 		notify.Init(&notify.Mail{
-			Port:     c.Email.Port,
-			From:     c.Email.From,
-			Host:     c.Email.Host,
-			Secret:   c.Email.Secret,
-			Nickname: c.Email.Nickname,
+			Port:     c.Notify.Email.Port,
+			From:     c.Notify.Email.From,
+			Host:     c.Notify.Email.Host,
+			Secret:   c.Notify.Email.Secret,
+			Nickname: c.Notify.Email.Nickname,
 		}, &notify.WebHook{
-			Url:  c.WebHook.Url,
-			Kind: c.WebHook.Kind,
+			Url:  c.Notify.WebHook.Url,
+			Kind: c.Notify.WebHook.Kind,
 		})
 
 		go notify.Serve()
