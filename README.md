@@ -15,7 +15,28 @@
 - 日志:              [Zap](https://github.com/uber-go/zap)
 - 读取配置文件:[Viper](https://github.com/spf13/viper)
 
-## 2. 目录结构
+## 2.功能特性
+
+- 支持数据库mysql、redis、etcd连接
+- 提供五种文件上传(存储)的方式，包括本地上传、阿里云存储对象、七牛云存储对象、腾讯云存储对象、华为云存储对象
+- 提供通知功能，提供email和webhook两种方式
+- 提供http请求Get方法和Post方法
+- 提供日志封装
+- 通过viper加载配置文件，支持testing和production两种环境，支持json、yaml、ini三种文件格式
+- 提供一些有用的工具包
+    - event.go: 监听程序的退出信号
+    - file.go:  一些对文件目录处理的函数
+    - ip.go:    获取本机ip
+    - map.go:   对map的一些封装，提高安全性
+    - md5.go:  对数据的普通加密
+    - parse.go: 对cmd命令的解析
+    - platform.go: 一些关于各平台的常量
+    - scrypt.go: 对数据的高级加密，不可逆
+    - strings.go: 字符串转化的一些处理函数
+    - system.go:  获取服务器的cpu、硬盘、内存等信息
+    - task.go:   对定时任务的简单封装
+    - time.go:   对时间的一些处理函数
+    - uuid.go:   获取uuid（唯一）
 
 
 | 目录         | 说明                               |
@@ -26,8 +47,9 @@
 | logger     | 基于zap实现的日志管理，实现日志分类以及分割          |
 | notify     | 提供email和webhook两种通知方式            |
 | server     | 基于gin实现对web服务的启动                 |
-| utils      | 一些工具类，比如system.go用来获取服务器cpu和内存信息 |
+| utils      | 一些工具类 |
 | config.go  | 配置信息的结构体并基于viper加载配置文件           |
+| upload.go  | 文件上传功能的方法封装           |
 | env.go     | 一些环境变量                           |
 | request.go | 常见的绑定请求的的结构体                     |
 | response.go | 常见的请求返回的结构体   
@@ -220,7 +242,7 @@ github.com/tmnhs/common-test/cmd imports
 replace google.golang.org/grpc => google.golang.org/grpc v1.26.0
 ```
 ## 5. 其他功能
-如果你需要添加其他的功能，建议将common克隆到你的项目里自行修改
+如果你需要添加其他的功能，建议将common克隆到你的项目里自行修改，然后
 ```
 replace github.com/tmnhs/common => ../common
 ```
