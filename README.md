@@ -87,8 +87,8 @@ go get -u github.com/tmnhs/common
     "port": "3306",
     "config": "charset=utf8mb4&parseTime=True&loc=Local",
     "db-name": "common-test",
-    "username": "root",
-    "password": "root",
+    "username": "",
+    "password": "",
     "max-idle-conns": 100,
     "max-open-conns": 100,
     "log-mode": "info",
@@ -102,6 +102,7 @@ go get -u github.com/tmnhs/common
   "system": {
     "env": "testing",
     "addr": 8089,
+    "upload-type": "qiniu",
     "version": "v1.0.2"
   },
   "etcd": {
@@ -113,25 +114,64 @@ go get -u github.com/tmnhs/common
     "dial-timeout": 2,
     "req-timeout": 5
   },
-  "email": {
-    "port": 465,
-    "from": "test@qq.com",
-    "host": "smtp.qq.com",
-    "is-ssl": true,
-    "secret": "test",
-    "nickname": "common-test",
-    "to": [
-      "test@test.mobi"
-    ]
+  "notify": {
+    "email": {
+      "port": 465,
+      "from": "test@qq.com",
+      "host": "smtp.qq.com",
+      "is-ssl": true,
+      "secret": "test",
+      "nickname": "common-test",
+      "to": [
+        "test@test.mobi"
+      ]
+    },
+    "webhook": {
+      "url": "url",
+      "kind": "feishu"
+    }
   },
-  "webhook": {
-    "url": "url",
-    "kind": "feishu"
+  "upload": {
+    "local": {
+      "path": "upload"
+    },
+    "aliyun-oss": {
+      "endpoint": "yourEndpoint",
+      "access-key-id": "yourAccessKeyId",
+      "access-key-secret": "yourAccessKeySecret",
+      "bucket-name": "yourBucketName",
+      "bucket-url": "yourBucketUrl",
+      "base-path": "yourBasePath"
+    },
+    "hua-wei-obs": {
+      "path": "you-path",
+      "bucket": "you-bucket",
+      "endpoint": "you-endpoint",
+      "access-key": "you-access-key",
+      "secret-key": "you-secret-key"
+    },
+    "qiniu": {
+      "zone": "ZoneHuanan",
+      "bucket": "",
+      "img-path": "http://qny.tmnhs.top",
+      "use-https": false,
+      "access-key": "",
+      "secret-key": "",
+      "use-cdn-domains": false
+    },
+    "tencent-cos": {
+      "bucket": "xxxxx-10005608",
+      "region": "ap-shanghai",
+      "secret-id": "xxxxxxxx",
+      "secret-key": "xxxxxxxx",
+      "base-url": "xxxx",
+      "path-prefix": "your path"
+    }
   },
   "log": {
     "level": "debug",
     "format": "console",
-    "prefix": "[common]",
+    "prefix": "[common-test]",
     "director": "logs",
     "showLine": false,
     "encode-level": "LowercaseLevelEncoder",
