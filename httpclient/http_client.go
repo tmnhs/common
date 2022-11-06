@@ -5,7 +5,6 @@ package httpclient
 import (
 	"bytes"
 	"fmt"
-	"github.com/tmnhs/common/logger"
 	"io/ioutil"
 	"net/http"
 	"time"
@@ -31,7 +30,6 @@ func Get(url string, timeout int64) (result string, err error) {
 	}
 	data, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		logger.GetLogger().Warn(fmt.Sprintf("http get api url:%s send  err: %s", url, err.Error()))
 		return
 	}
 	result = string(data)
@@ -60,7 +58,6 @@ func PostParams(url string, params string, timeout int64) (result string, err er
 	}
 	data, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		logger.GetLogger().Warn(fmt.Sprintf("http post api url:%s send  err: %s", url, err.Error()))
 		return
 	}
 	result = string(data)
@@ -85,7 +82,6 @@ func PostJson(url string, body string, timeout int64) (result string, err error)
 	defer resp.Body.Close()
 	data, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		logger.GetLogger().Warn(fmt.Sprintf("http post api url:%s send  err: %s", url, err.Error()))
 		return
 	}
 	result = string(data)
