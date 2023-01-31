@@ -278,8 +278,8 @@ func (srv *ApiServer) ListenAndServe() error {
 	srv.HttpServer = &http.Server{
 		Handler:        srv.Engine,
 		Addr:           srv.Addr,
-		ReadTimeout:    20 * time.Second,
-		WriteTimeout:   20 * time.Second,
+		ReadTimeout:    30 * time.Second,
+		WriteTimeout:   30 * time.Second,
 		MaxHeaderBytes: 1 << 20,
 	}
 	if err := srv.HttpServer.ListenAndServe(); err != nil && err != http.ErrServerClosed {
